@@ -5,15 +5,72 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>水果盤 FRUIT MACHINE</title>
   <link rel="icon" href="img/cherry.png">
+  <link rel="preload" as="image" href="img/cover.jpg">
+  <style>
+    /* 載入封面：寫在這裡讓它第一時間就畫出來 */
+    #loader {
+      position: fixed; inset: 0; z-index: 100;
+      display: flex; align-items: flex-end; justify-content: center;
+      background: #07020a url("img/cover.jpg") center / cover no-repeat;
+      transition: opacity .6s;
+    }
+    #loader.done { opacity: 0; pointer-events: none; }
+    .ld-box { width: min(560px, 86vw); margin-bottom: 5vh; text-align: center; font-family: "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", sans-serif; }
+    .ld-text { margin: 0 0 12px; color: #ffe79a; font-size: clamp(18px, 3vw, 30px); font-weight: 900; letter-spacing: .08em; text-shadow: 0 0 10px #ff7a00, 0 2px 0 #000; }
+    .ld-dots { display: inline-block; width: 1.6em; text-align: left; }
+    .ld-dots::after { content: ""; animation: ld-dots 1.2s steps(1) infinite; }
+    @keyframes ld-dots { 0% { content: ""; } 25% { content: "．"; } 50% { content: "．．"; } 75% { content: "．．．"; } }
+    .ld-bar { height: 14px; border-radius: 8px; overflow: hidden; background: rgba(0, 0, 0, .65); border: 2px solid #f5c542; box-shadow: 0 0 12px rgba(255, 180, 0, .5); }
+    .ld-bar i { display: block; width: 0; height: 100%; background: linear-gradient(90deg, #ffb000, #fff3a0); transition: width .25s; }
+    .ld-pct { margin: 6px 0 0; color: #f3e3c0; font: 700 14px ui-monospace, Consolas, monospace; text-shadow: 0 1px 2px #000; }
+    body.loading #stage { visibility: hidden; }
+  </style>
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="loading">
+  <div id="loader" role="status" aria-live="polite">
+    <div class="ld-box">
+      <p class="ld-text">遊戲載入中，請稍後<span class="ld-dots"></span></p>
+      <div class="ld-bar"><i id="ldFill"></i></div>
+      <p class="ld-pct" id="ldPct">0%</p>
+    </div>
+  </div>
+  <script>
+    // 封面一出來就先預載遊戲圖片；音效由 sound.js 解碼。game.js 開機時等兩者都好了才收起封面（圖片佔 60%、音效佔 40%）
+    (function () {
+      var urls = ['img/logo.png', 'img/bg.jpg'].concat(['seven', 'bar3', 'bar2', 'bar1', 'star', 'melon', 'bell', 'orange', 'cherry', 'wild'].map(function (s) { return 'img/' + s + '.png'; }));
+      var imgDone = 0, sndDone = 0, sndTotal = 1;
+      var fill = document.getElementById('ldFill'), pct = document.getElementById('ldPct');
+      function paint() {
+        var p = Math.round(100 * (0.6 * imgDone / urls.length + 0.4 * sndDone / sndTotal));
+        fill.style.width = p + '%';
+        pct.textContent = p + '%';
+      }
+      window.FruitLoader = {
+        images: new Promise(function (resolve) {
+          urls.forEach(function (u) {
+            var im = new Image();
+            im.onload = im.onerror = function () { imgDone++; paint(); if (imgDone === urls.length) resolve(); };
+            im.src = u;
+          });
+        }),
+        sounds: function (n, total) { sndDone = n; sndTotal = total || 1; paint(); },
+        finish: function () {
+          var el = document.getElementById('loader');
+          document.body.classList.remove('loading');
+          el.classList.add('done');
+          setTimeout(function () { el.remove(); }, 700);
+        },
+      };
+    })();
+  </script>
   <div id="stage">
     <aside class="side left">
       <img class="logo" src="img/logo.png" alt="水果盤 FRUIT MACHINE">
       <section class="panel">
         <h2>賠率表 <small>倍數 × 每線押注</small></h2>
         <table class="paytable" id="paytable"></table>
+        <div class="sevens" id="sevensTable"></div>
       </section>
       <section class="panel stats">
         <h2>本機紀錄</h2>
@@ -83,9 +140,9 @@
     </aside>
   </div>
 
-  <script src="core.js"></script>
-  <script src="sfx/sounds.js"></script>
-  <script src="sound.js"></script>
-  <script src="game.js"></script>
+  <script src="core.js" defer></script>
+  <script src="sfx/sounds.js" defer></script>
+  <script src="sound.js" defer></script>
+  <script src="game.js" defer></script>
 </body>
 </html>

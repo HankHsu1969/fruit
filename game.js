@@ -536,7 +536,8 @@
     }
     markers.forEach((m) => m.classList.remove('hit'));
     if (ev.bonus) {
-      msg(`${ev.bonus.label}！總押注 ×${C.FULL_FRUIT_PAY} ＝ ${money(ev.bonus.win)}`);
+      markCells(ev.bonus.cells);
+      msg(`${ev.bonus.label}！${ev.bonus.desc} ＝ ${money(ev.bonus.win)}`);
       await sleep(1500);
     }
     await countUp(ev.total);
@@ -729,13 +730,17 @@
   // ---------------- 側欄資訊 ----------------
   function buildInfo() {
     const icons = (list) => list.map((s) => `<img src="${IMG(s)}" alt="">`).join('');
-    const rows = Object.entries(SYMBOLS).map(([key, s]) => ({ icons: [key, key, key], name: s.name, mult: `×${s.pay}` }));
+    const rows = Object.entries(SYMBOLS).filter(([, s]) => !s.wild).map(([key, s]) => ({ icons: [key, key, key], name: s.name, mult: `×${s.pay}` }));
     rows.push({ icons: ['bar1', 'bar2', 'bar3'], name: '任意 BAR', mult: `×${C.ANY_BAR_PAY}` });
     rows.push({ icons: ['cherry', 'cherry'], name: '任兩個櫻桃', mult: `×${C.CHERRY2_PAY}` });
-    rows.push({ icons: ['cherry', 'orange', 'mango', 'melon'], name: '全盤水果', mult: `<small>總押注</small>×${C.FULL_FRUIT_PAY}` });
+    rows.push({ icons: ['cherry', 'orange', 'melon'], name: '全盤水果', mult: `<small>總押注</small>×${C.FULL_FRUIT_PAY}` });
+    rows.push({ icons: ['wild'], name: 'WILD 百搭', mult: '<small>當任何圖示</small>' });
     $('paytable').innerHTML = rows
       .map((r) => `<tr><td class="icons">${icons(r.icons)}</td><td class="pname">${r.name}</td><td class="pmult">${r.mult}</td></tr>`)
       .join('');
+    $('sevensTable').innerHTML =
+      `<div class="st-title">${icons(['seven'])}畫面上 77 的數量<small>× 每線押注</small></div>` +
+      `<div class="st-grid">${Object.entries(C.SEVEN_COUNT_PAY).map(([n, pay]) => `<div><b>${n} 個</b><span>×${pay}</span></div>`).join('')}</div>`;
 
     // 8 條線的小圖
     const dot = (r, c) => [14 + c * 22, 10 + r * 16];
@@ -843,7 +848,7 @@
   }
 
   // ---------------- 開機 ----------------
-  function boot() {
+  async function boot() {
     load();
     Object.keys(SYMBOLS).forEach((s) => { new Image().src = IMG(s); });
     buildReels();
@@ -859,9 +864,26 @@
     fit();
     window.addEventListener('resize', fit);
     render();
-    msgThenIdle(firstVisit ? `歡迎光臨！開機贈送 ${money(START_CREDIT)}` : '歡迎光臨 水果盤', 2600);
     save();
+    await waitForAssets();
+    msgThenIdle(firstVisit ? `歡迎光臨！開機贈送 ${money(START_CREDIT)}` : '歡迎光臨 水果盤', 2600);
     kickIdle();
+  }
+
+  // 等封面上的圖片預載完、所有音效解碼完，才收起封面顯示機台（最多等 20 秒，避免卡在封面）
+  async function waitForAssets() {
+    const L = window.FruitLoader;
+    if (!L) return;
+    const total = Object.keys(window.FRUIT_SFX || {}).length;
+    const t0 = performance.now();
+    await Promise.race([L.images, sleep(20000)]);
+    while (Snd.loaded < total && performance.now() - t0 < 20000) {
+      L.sounds(Snd.loaded, total);
+      await sleep(50);
+    }
+    L.sounds(total, total);
+    await sleep(250);
+    L.finish();
   }
 
   boot();

@@ -4,21 +4,24 @@
 
   // pay = 一條線三個相同時的倍數（× 每線押注）。
   // 最低的櫻桃 ×24 = 押滿 8 線時總押注的 3 倍，所以「任何三個一樣」都是大獎。
+  // WILD 百搭：可以當成任何圖示（含任意 BAR、櫻桃），只出現在中間那一輪。
   const SYMBOLS = {
-    seven:  { name: '77',    pay: 150 },
-    bar3:   { name: '三BAR', pay: 80, bar: true },
-    bar2:   { name: '雙BAR', pay: 60, bar: true },
+    seven:  { name: '77',    pay: 300 },
+    bar3:   { name: '三BAR', pay: 200, bar: true },
+    bar2:   { name: '雙BAR', pay: 100, bar: true },
+    bar1:   { name: '單BAR', pay: 50, bar: true },
     star:   { name: '雙星',  pay: 50 },
-    bar1:   { name: '單BAR', pay: 40, bar: true },
     melon:  { name: '西瓜',  pay: 32, fruit: true },
     bell:   { name: '鈴鐺',  pay: 30 },
-    mango:  { name: '芒果',  pay: 28, fruit: true },
     orange: { name: '橘子',  pay: 26, fruit: true },
     cherry: { name: '櫻桃',  pay: 24, fruit: true },
+    wild:   { name: 'WILD',  pay: 0, wild: true },
   };
   const ANY_BAR_PAY = 25;    // 一條線三個 BAR（單/雙/三混合）
   const CHERRY2_PAY = 3;     // 一條線任兩個櫻桃（小獎）
-  const FULL_FRUIT_PAY = 100; // 全盤九格都是水果（櫻桃/橘子/芒果/西瓜）：總押注 ×100（另外加上線上的獎）
+  const FULL_FRUIT_PAY = 100; // 全盤九格都是水果（櫻桃/橘子/西瓜，WILD 也算）：總押注 ×100（另外加上線上的獎）
+  // 畫面上（九格任意位置）出現 N 個 77 的額外獎金：× 每線押注（WILD 不算）
+  const SEVEN_COUNT_PAY = { 5: 100, 6: 500, 7: 1000, 8: 2000, 9: 3000 };
   const BIG_WIN_RATIO = 3;   // 單局贏得 ≥ 總押注 ×3 算「大獎」
 
   // 8 條線，順序就是「押線」開放的順序。cells 為 [列, 行]。
@@ -33,15 +36,22 @@
     { name: '右斜', cells: [[2, 0], [1, 1], [0, 2]] },
   ];
 
-  // 三條輪帶（由上往下捲）。tools/sim.js 精算（押滿 8 線）：每 2 局約中 1 次、每 5 局約 1 次大獎，回饋率約 97%；
+  // 三條輪帶（由上往下捲，各 30 格）。每輪都有一段連續三個 77；WILD 只在中間那一輪（2 個，約每 4–5 局畫面上會出現一次）。
+  // tools/sim.js 依權重精算（押滿 8 線）：約每 2 局中 1 次、每 6.5 局 1 次大獎，回饋率約 97%；
   // 依序開放的任何線數（1–8 線）回饋率都低於 100%。
   const REELS = [
-    ['bell', 'melon', 'seven', 'cherry', 'bell', 'mango', 'melon', 'melon', 'bar1', 'seven', 'melon', 'melon', 'bar3', 'orange', 'orange',
-      'orange', 'bar3', 'bar1', 'cherry', 'bell', 'cherry', 'bar2', 'melon', 'cherry', 'bar2', 'star', 'star', 'cherry', 'mango', 'melon'],
-    ['bar2', 'cherry', 'seven', 'bar2', 'bell', 'star', 'orange', 'bell', 'star', 'seven', 'seven', 'melon', 'cherry', 'mango', 'bar1',
-      'bar2', 'melon', 'melon', 'bar3', 'orange', 'bar3', 'bar1', 'cherry', 'bell', 'bar3', 'bar2', 'cherry', 'orange', 'bar1', 'bar3'],
-    ['bar1', 'mango', 'seven', 'bar3', 'mango', 'cherry', 'bell', 'orange', 'cherry', 'melon', 'star', 'star', 'cherry', 'mango', 'bell',
-      'cherry', 'star', 'bar2', 'cherry', 'star', 'melon', 'bar2', 'bar3', 'cherry', 'cherry', 'cherry', 'star', 'melon', 'orange', 'bell'],
+    ['orange', 'melon', 'bar1', 'seven', 'seven', 'seven', 'star', 'orange', 'orange', 'bell', 'bar2', 'melon', 'bell', 'bar3', 'cherry',
+      'bar2', 'bell', 'star', 'cherry', 'cherry', 'star', 'orange', 'bell', 'star', 'bar2', 'bell', 'orange', 'star', 'orange', 'melon'],
+    ['cherry', 'bar3', 'bell', 'star', 'melon', 'melon', 'bar1', 'star', 'melon', 'cherry', 'wild', 'star', 'cherry', 'bell', 'bar2',
+      'seven', 'seven', 'seven', 'orange', 'bar1', 'bell', 'bar1', 'orange', 'melon', 'star', 'bar1', 'star', 'melon', 'wild', 'bar2'],
+    ['bar1', 'orange', 'bell', 'melon', 'orange', 'cherry', 'bar1', 'melon', 'orange', 'bar3', 'melon', 'orange', 'bar1', 'bar3', 'cherry',
+      'cherry', 'bell', 'bar3', 'melon', 'bell', 'bell', 'star', 'seven', 'seven', 'seven', 'bar2', 'bar3', 'orange', 'bell', 'melon'],
+  ];
+  // 每個停點的權重（虛擬輪帶）：疊 77 附近的停點權重很小——每圈都看得到它轉過去，但很少停在那裡
+  const WEIGHTS = [
+    [6, 1, 1, 1, 12, 1, 34, 54, 1, 19, 3, 1, 1, 1, 1, 25, 26, 36, 41, 16, 5, 43, 55, 24, 48, 24, 8, 6, 58, 3],
+    [1, 16, 24, 57, 8, 57, 20, 31, 27, 19, 12, 1, 1, 6, 1, 1, 1, 4, 60, 10, 47, 46, 32, 8, 25, 16, 29, 16, 38, 1],
+    [34, 25, 14, 14, 13, 6, 10, 54, 9, 46, 20, 41, 4, 37, 55, 8, 22, 23, 28, 2, 1, 1, 1, 1, 1, 1, 60, 16, 22, 33],
   ];
 
   /** 輪帶停在 stop 時，畫面上由上到下的三個圖 */
@@ -52,17 +62,40 @@
     return [0, 1, 2].map((r) => cols.map((col) => col[r])); // grid[列][行]
   }
 
+  const WEIGHT_SUM = WEIGHTS.map((w) => w.reduce((x, y) => x + y, 0));
+  function pickStop(reel, rng) {
+    let x = rng() * WEIGHT_SUM[reel];
+    const w = WEIGHTS[reel];
+    for (let i = 0; i < w.length; i++) { x -= w[i]; if (x < 0) return i; }
+    return w.length - 1;
+  }
+
   function spin(rng = Math.random) {
-    const stops = REELS.map((strip) => Math.floor(rng() * strip.length));
+    const stops = REELS.map((_, r) => pickStop(r, rng));
     return { stops, grid: gridFromStops(stops) };
   }
 
-  function lineResult(a, b, c) {
+  // 不含 WILD 的基本判斷
+  function plainResult(a, b, c) {
     if (a === b && b === c) return { mult: SYMBOLS[a].pay, label: `${SYMBOLS[a].name} ×3`, sym: a };
     if (SYMBOLS[a].bar && SYMBOLS[b].bar && SYMBOLS[c].bar) return { mult: ANY_BAR_PAY, label: '任意 BAR', sym: 'bar1' };
     const cherries = (a === 'cherry') + (b === 'cherry') + (c === 'cherry');
     if (cherries === 2) return { mult: CHERRY2_PAY, label: '櫻桃 ×2', sym: 'cherry', partial: true };
     return null;
+  }
+
+  /** 一條線的獎。WILD 會自動當成線上其他圖示中最划算的那一個（例如 WILD＋西瓜＋西瓜 = 西瓜 ×3） */
+  function lineResult(a, b, c) {
+    const line = [a, b, c];
+    const wilds = line.filter((s) => s === 'wild').length;
+    if (!wilds) return plainResult(a, b, c);
+    if (wilds === 3) return { ...plainResult('seven', 'seven', 'seven'), label: 'WILD ×3（當 77）', wild: true };
+    let best = null;
+    for (const sub of new Set(line.filter((s) => s !== 'wild'))) {
+      const r = plainResult(...line.map((s) => (s === 'wild' ? sub : s)));
+      if (r && (!best || r.mult > best.mult)) best = { ...r, label: `${r.label}（WILD）`, wild: true };
+    }
+    return best;
   }
 
   /** 算分：lines = 押幾線（1–8），lineBet = 每線押分 */
@@ -73,11 +106,20 @@
       const [a, b, c] = cells.map(([r, k]) => grid[r][k]);
       const res = lineResult(a, b, c);
       if (!res) continue;
-      const hitCells = res.partial ? cells.filter(([r, k]) => grid[r][k] === 'cherry') : cells;
+      const hitCells = res.partial ? cells.filter(([r, k]) => grid[r][k] === 'cherry' || grid[r][k] === 'wild') : cells;
       wins.push({ line: i, ...res, cells: hitCells, win: res.mult * lineBet });
     }
+    // 額外獎（兩種不會同時出現：77 不是水果）
     let bonus = null;
-    if (grid.flat().every((s) => SYMBOLS[s].fruit)) bonus = { label: '全盤水果', win: FULL_FRUIT_PAY * lines * lineBet };
+    const all = [];
+    for (let r = 0; r < 3; r++) for (let k = 0; k < 3; k++) all.push([r, k]);
+    const sevens = all.filter(([r, k]) => grid[r][k] === 'seven');
+    if (all.every(([r, k]) => SYMBOLS[grid[r][k]].fruit || SYMBOLS[grid[r][k]].wild)) {
+      bonus = { label: '全盤水果', desc: `總押注 ×${FULL_FRUIT_PAY}`, win: FULL_FRUIT_PAY * lines * lineBet, cells: all };
+    } else if (SEVEN_COUNT_PAY[sevens.length]) {
+      const pay = SEVEN_COUNT_PAY[sevens.length];
+      bonus = { label: `${sevens.length} 個 77`, desc: `每線押注 ×${pay}`, win: pay * lineBet, cells: sevens };
+    }
     const total = wins.reduce((a, w) => a + w.win, 0) + (bonus ? bonus.win : 0);
     return { wins, bonus, total };
   }
@@ -88,8 +130,8 @@
   const doubleWins = (n, guess) => (guess === 'big' ? n >= 8 : n <= 6);
 
   const api = {
-    SYMBOLS, LINES, REELS, ANY_BAR_PAY, CHERRY2_PAY, FULL_FRUIT_PAY, BIG_WIN_RATIO, DOUBLE_MAX,
-    column, gridFromStops, spin, evaluate, rollDouble, doubleWins,
+    SYMBOLS, LINES, REELS, WEIGHTS, ANY_BAR_PAY, CHERRY2_PAY, FULL_FRUIT_PAY, SEVEN_COUNT_PAY, BIG_WIN_RATIO, DOUBLE_MAX,
+    column, gridFromStops, spin, lineResult, evaluate, rollDouble, doubleWins,
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.FruitCore = api;

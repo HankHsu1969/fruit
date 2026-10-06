@@ -65,9 +65,19 @@ body.portrait .logo-top { display: block; }
 .paytable tr:last-child td { border-bottom: 0; }
 .paytable .icons { white-space: nowrap; width: 100px; }
 .paytable .icons img { width: 29px; height: 29px; object-fit: contain; vertical-align: middle; margin-right: -4px; }
+.paytable .icons img[src$="wild.png"] { width: 64px; }  /* WILD 牌子扁長，放大一點才看得清楚 */
 .paytable .pname { font-size: 15px; font-weight: 900; white-space: nowrap; }
 .paytable .pmult { font-size: 22px; font-weight: 900; color: var(--gold-lt); text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .paytable .pmult small { font-size: 12px; color: var(--muted); font-weight: 500; }
+
+.sevens { margin-top: 8px; padding-top: 8px; border-top: 1px dashed rgba(255, 215, 100, .25); }
+.sevens .st-title { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; font-size: 15px; font-weight: 900; color: var(--gold); }
+.sevens .st-title img { width: 26px; height: 26px; object-fit: contain; }
+.sevens .st-title small { margin-left: auto; font-size: 12px; font-weight: 500; color: var(--muted); }
+.sevens .st-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; text-align: center; }
+.sevens .st-grid div { padding: 3px 0; border-radius: 6px; background: #1a0508; border: 1px solid #4a2a10; }
+.sevens .st-grid b { display: block; font-size: 12px; color: var(--muted); }
+.sevens .st-grid span { font-size: 14px; font-weight: 900; color: var(--gold-lt); font-variant-numeric: tabular-nums; }
 
 .stats dl { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; margin: 0; font-size: 16px; }
 .stats dt { color: var(--muted); }
