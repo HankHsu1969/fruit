@@ -18,7 +18,7 @@
   };
   const ANY_BAR_PAY = 25;    // 一條線三個 BAR（單/雙/三混合）
   const CHERRY2_PAY = 3;     // 一條線任兩個櫻桃（小獎）
-  const FULL_FRUIT_PAY = 10; // 全盤九格都是水果（櫻桃/橘子/芒果/西瓜）：總押注 ×10
+  const FULL_FRUIT_PAY = 100; // 全盤九格都是水果（櫻桃/橘子/芒果/西瓜）：總押注 ×100（另外加上線上的獎）
   const BIG_WIN_RATIO = 3;   // 單局贏得 ≥ 總押注 ×3 算「大獎」
 
   // 8 條線，順序就是「押線」開放的順序。cells 為 [列, 行]。
@@ -33,7 +33,7 @@
     { name: '右斜', cells: [[2, 0], [1, 1], [0, 2]] },
   ];
 
-  // 三條輪帶（由上往下捲）。tools/sim.js 精算（押滿 8 線）：每 2 局約中 1 次、每 5 局約 1 次大獎，回饋率約 95%；
+  // 三條輪帶（由上往下捲）。tools/sim.js 精算（押滿 8 線）：每 2 局約中 1 次、每 5 局約 1 次大獎，回饋率約 97%；
   // 依序開放的任何線數（1–8 線）回饋率都低於 100%。
   const REELS = [
     ['bell', 'melon', 'seven', 'cherry', 'bell', 'mango', 'melon', 'melon', 'bar1', 'seven', 'melon', 'melon', 'bar3', 'orange', 'orange',

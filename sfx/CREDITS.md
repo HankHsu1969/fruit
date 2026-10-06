@@ -4,15 +4,14 @@
 
 ## 遊戲使用中
 
-入金（得分）的金幣聲不是取樣，而是在 sound.js 即時 FM 合成的短金屬鈴（仿小瑪莉收分的「鏘」）。
 
 | 遊戲檔案 | HeyGen 名稱 | 編號 |
 |---|---|---|
 | button.mp3（按鍵） | Click and Beep | 301b0b85c4407fa3 |
-| coin.mp3 第 1 層（投幣：硬幣落下） | Quick metallic rattle | fa09ed3ae6377e67 |
-| coin.mp3 第 2 層（投幣：加分提示） | Two tone electronic chime | b6058a264c8df351 |
+| coin.mp3 第 1 層（投幣、得分：硬幣落下） | Quick metallic rattle | fa09ed3ae6377e67 |
+| coin.mp3 第 2 層（投幣、得分：加分提示） | Two tone electronic chime | b6058a264c8df351 |
 | spin.mp3（轉輪循環） | Mechanical ratchet clicks | 393934d3a3ccc457 |
-| reelstop.mp3（停輪：空心「喀」，小聲） | Hollow clack | f5c7657c37921dc2 |
+| reelstop.mp3（停輪：木頭「叩」，只取第一下，小聲） | Three wood knocks | f7e66a7aed7b2dad |
 | win.mp3（小獎：歡樂慶祝短樂句） | Astral Generated Music: 613a8316 | 613a83169b1e4b38acb91763a68e8279 |
 | medium.mp3（中獎：慶祝號角） | Astral Generated Music: 43e7e9ed | 43e7e9ed7366498a99c02e639d11bff7 |
 | bigwin.mp3 第 1 層（拉炮） | Airy pop | d9b59db7ed5ee90a |

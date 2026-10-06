@@ -11,7 +11,7 @@
   const START_CREDIT = 100;   // 第一次開機送 100 分 = 1,000 元
   const MAX_LINE_BET = 10;    // 每線押注上限 10 分 = 100 元
   const MAX_SCORE = 99999;    // 99,999 分 = 999,990 元（六位數 LED 顯示得下）
-  const COLLECT_MIN_MS = 22;  // 入金加速到最快時，每數一下的間隔
+  const COLLECT_MIN_MS = 35;  // 入金加速到最快時，每數一下的間隔
   const STORE_KEY = 'fruit-machine-9grid-v1';
   const LINE_COLORS = ['#ff3b3b', '#ffd400', '#33d6ff', '#4cff6a', '#ff8a1a', '#c86bff', '#ff4fd8', '#3f8bff'];
   const VMAX = 17;                       // 轉速（格/秒）
@@ -564,12 +564,12 @@
     setDoubleBox(null);
     render();
     // 入金像小瑪莉收分：一開始一分一分慢慢數（叮…叮…叮），越數越快；
-    // 速度到頂之後每下多收幾分，大獎也能在 2–3 秒內收完。每數一下響一聲金幣聲
+    // 速度到頂之後每下多收幾分，大獎也能在約 2 秒內收完。每數一下響一聲投幣聲
     const total = st.win;
     let delay = 120;
     while (st.win > 0) {
       const fast = delay <= COLLECT_MIN_MS;
-      const m = Math.min(fast ? Math.max(1, Math.ceil(total / 70)) : 1, st.win);
+      const m = Math.min(fast ? Math.max(1, Math.ceil(total / 45)) : 1, st.win);
       st.win -= m;
       st.credit = clampScore(st.credit + m);
       segWin(st.win * YUAN);
