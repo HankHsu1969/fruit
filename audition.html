@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>水果盤 音效試聽</title>
+  <link rel="icon" href="img/cherry.png">
+  <style>
+    :root { --gold: #f5c542; --ink: #f3e3c0; --muted: #c09a60; --card: #24070e; --line: #6a3a10; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(ellipse at top, #3a0a14, #0c0206 70%);
+      color: var(--ink);
+      font-family: "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", sans-serif;
+      padding: 24px 16px 48px;
+    }
+    main { max-width: 860px; margin: 0 auto; }
+    h1 { margin: 0 0 4px; color: var(--gold); font-size: 30px; }
+    .lead { margin: 0 0 24px; color: var(--muted); line-height: 1.6; }
+    h2 { margin: 28px 0 4px; color: var(--gold); font-size: 22px; }
+    h2 small { color: var(--muted); font-size: 14px; font-weight: 500; margin-left: 8px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; margin-top: 12px; }
+    .card {
+      display: flex; gap: 12px; align-items: center;
+      background: var(--card); border: 2px solid var(--line); border-radius: 14px; padding: 12px 14px;
+    }
+    .card.now { border-color: var(--gold); box-shadow: 0 0 14px rgba(245, 197, 66, .35); }
+    .play {
+      flex: none; width: 52px; height: 52px; border-radius: 50%; border: 0; cursor: pointer;
+      background: radial-gradient(circle at 35% 30%, #fff 0 6%, #ffe680 22%, #e0a400 70%, #7a5600);
+      color: #4a2a00; font-size: 20px; font-weight: 900;
+      box-shadow: 0 3px 0 #5a3a00, 0 6px 12px rgba(0, 0, 0, .5);
+    }
+    .play.on { filter: brightness(1.25); box-shadow: 0 0 0 4px #fff3, 0 0 18px #ffd84a; }
+    .play:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+    .info b { display: block; font-size: 18px; color: #fff; }
+    .info b em { font-style: normal; color: var(--gold); margin-right: 6px; }
+    .info > span { display: block; font-size: 13px; color: var(--muted); margin-top: 2px; line-height: 1.4; }
+    .tag { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 8px; background: var(--gold); color: #3a2000; font-size: 12px; font-weight: 900; vertical-align: 2px; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>水果盤 音效試聽</h1>
+    <p class="lead">按圓鈕試聽。挑好之後告訴 Claude 例如「小獎用 C、中獎用 B、得分用 A」，就會換進遊戲裡。<br>
+      標「目前使用」的是遊戲現在用的。所有音效都來自 HeyGen 音效庫。</p>
+    <div id="app"></div>
+  </main>
+
+  <script>
+    const SECTIONS = [
+      {
+        key: 'small', title: '小獎', hint: '贏回不到總押注時（押滿 8 線約每 3.7 局）', now: 'A',
+        items: {
+          A: ['歡樂慶祝短樂句', 'celebratory upbeat jingle・2.4 秒'],
+          B: ['卡通歡樂短句', 'fast cheerful children’s cartoon sting・2.1 秒'],
+          C: ['可愛叮咚小樂句', 'cute cheerful jingle with a magical ding・2.2 秒'],
+          D: ['8-bit 街機開場', 'retro 8-bit arcade start jingle・1.7 秒'],
+          E: ['卡通收尾樂句', 'fun cartoon outro jingle with a flourish・3.3 秒'],
+        },
+      },
+      {
+        key: 'medium', title: '中獎', hint: '總押注 1–3 倍（約每 35 局）', now: 'A',
+        items: {
+          A: ['慶祝號角', 'upbeat celebratory fanfare・3.4 秒'],
+          B: ['拉霸機中獎', 'slot machine win: reels + jackpot bells・3.4 秒'],
+          C: ['派對拉炮號角', 'short celebratory party confetti fanfare・2.6 秒'],
+          D: ['8-bit 勝利號角', '8-bit chiptune victory fanfare・3 秒'],
+          E: ['卡通收尾樂句', 'fun cartoon outro jingle with a flourish・3.3 秒'],
+        },
+      },
+      {
+        key: 'coin', title: '得分（金幣）', hint: '按得分時，一枚一枚數進來的金幣聲（試聽是 10 枚）', now: 'A',
+        items: {
+          A: ['金幣落下・叮', 'gold coin drop and ring'],
+          B: ['明亮金屬叮', 'bright metallic ding'],
+          C: ['金屬清脆碰撞', 'metallic clink'],
+        },
+      },
+    ];
+
+    let current = null;
+    function stop() {
+      if (!current) return;
+      current.audio.pause();
+      current.audio.currentTime = 0;
+      current.btn.classList.remove('on');
+      current.btn.textContent = '▶';
+      current = null;
+    }
+
+    const app = document.getElementById('app');
+    for (const sec of SECTIONS) {
+      const h = document.createElement('h2');
+      h.innerHTML = `${sec.title}<small>${sec.hint}</small>`;
+      app.appendChild(h);
+      const grid = document.createElement('div');
+      grid.className = 'grid';
+      for (const [letter, [name, desc]] of Object.entries(sec.items)) {
+        const card = document.createElement('div');
+        card.className = 'card' + (letter === sec.now ? ' now' : '');
+        const btn = document.createElement('button');
+        btn.className = 'play';
+        btn.textContent = '▶';
+        btn.setAttribute('aria-label', `播放 ${sec.title} ${letter}`);
+        const audio = new Audio(`sfx/audition/${sec.key}_${letter}.mp3`);
+        audio.preload = 'auto';
+        audio.addEventListener('ended', () => { if (current && current.audio === audio) stop(); });
+        btn.addEventListener('click', () => {
+          const same = current && current.audio === audio;
+          stop();
+          if (same) return;
+          audio.play();
+          btn.classList.add('on');
+          btn.textContent = '■';
+          current = { audio, btn };
+        });
+        const info = document.createElement('div');
+        info.className = 'info';
+        info.innerHTML = `<b><em>${letter}</em>${name}${letter === sec.now ? '<span class="tag">目前使用</span>' : ''}</b><span>${desc}</span>`;
+        card.append(btn, info);
+        grid.appendChild(card);
+      }
+      app.appendChild(grid);
+    }
+  </script>
+</body>
+</html>

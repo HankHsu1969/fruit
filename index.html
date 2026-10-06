@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>水果盤 FRUIT MACHINE</title>
+  <link rel="icon" href="img/cherry.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="stage">
+    <aside class="side left">
+      <img class="logo" src="img/logo.png" alt="水果盤 FRUIT MACHINE">
+      <section class="panel">
+        <h2>賠率表 <small>倍數 × 每線押注</small></h2>
+        <table class="paytable" id="paytable"></table>
+      </section>
+      <section class="panel stats">
+        <h2>本機紀錄</h2>
+        <dl>
+          <dt>局數</dt><dd id="statGames">0</dd>
+          <dt>累計投幣</dt><dd id="statCoins">0</dd>
+          <dt>單局最高</dt><dd id="statBest">0</dd>
+        </dl>
+      </section>
+    </aside>
+
+    <main class="machine">
+      <img class="logo logo-top" src="img/logo.png" alt="">
+
+      <div class="reel-box" id="reelBox">
+        <div class="window" id="window">
+          <div class="reel" data-reel="0"></div>
+          <div class="reel" data-reel="1"></div>
+          <div class="reel" data-reel="2"></div>
+          <div class="hl-grid" id="hlGrid"></div>
+          <svg class="paylines" id="paylines" aria-hidden="true"></svg>
+          <div class="win-tag" id="winTag"></div>
+        </div>
+      </div>
+
+      <div class="msg-row">
+        <div class="dotmatrix"><span id="msg">歡迎光臨</span></div>
+        <div class="dbl-box">
+          <label>比倍<em id="dblHint">小1–6 大8–13</em></label>
+          <div class="seg7 green" id="ledDouble"></div>
+        </div>
+      </div>
+
+      <div class="led-row">
+        <button class="music" id="btnMute" title="音效開關（M）">音效</button>
+        <div class="led"><label>贏得<br>金額</label><div class="seg7" id="ledWin"></div></div>
+        <div class="led"><label>總<br>押注</label><div class="seg7 amber" id="ledBet"></div></div>
+        <div class="led"><label>目前<br>餘額</label><div class="seg7" id="ledCredit"></div></div>
+      </div>
+
+      <div class="buttons">
+        <button class="rb green" id="btnBig"><span class="cap"></span><b>比倍/大<kbd>B</kbd></b></button>
+        <button class="rb green" id="btnSmall"><span class="cap"></span><b>小<kbd>S</kbd></b></button>
+        <button class="rb blue" id="btnStop0"><span class="cap"></span><b>停1<kbd>1</kbd></b></button>
+        <button class="rb blue" id="btnStop1"><span class="cap"></span><b>停2<kbd>2</kbd></b></button>
+        <button class="rb blue" id="btnStop2"><span class="cap"></span><b>停3<kbd>3</kbd></b></button>
+        <button class="rb yellow" id="btnTake"><span class="cap"></span><b>得分<kbd>T</kbd></b></button>
+        <button class="rb green" id="btnCoin"><span class="cap"></span><b>投幣<kbd>C</kbd></b></button>
+        <button class="rb red" id="btnBet"><span class="cap"></span><b>押注<kbd>Q</kbd></b></button>
+        <button class="rb red" id="btnLines"><span class="cap"></span><b>押線<kbd>W</kbd></b></button>
+        <button class="rb red" id="btnMax"><span class="cap"></span><b>最大注<kbd>E</kbd></b></button>
+        <button class="rb yellow" id="btnAuto"><span class="cap"></span><b>自動<kbd>A</kbd></b></button>
+        <button class="rb yellow big" id="btnSpin"><span class="cap"></span><b>轉/全停<kbd>SPACE</kbd></b></button>
+      </div>
+    </main>
+
+    <aside class="side right">
+      <section class="panel">
+        <h2>8 條線 <small>押線依序開放</small></h2>
+        <div class="line-thumbs" id="lineThumbs"></div>
+      </section>
+      <section class="panel">
+        <h2>中獎紀錄</h2>
+        <ul class="history" id="history"></ul>
+      </section>
+      <p class="disclaimer">懷舊娛樂模擬・1 分 = 10 元（僅為遊戲顯示，無任何實際價值）</p>
+    </aside>
+  </div>
+
+  <script src="core.js"></script>
+  <script src="sfx/sounds.js"></script>
+  <script src="sound.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
