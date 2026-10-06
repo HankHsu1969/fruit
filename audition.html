@@ -44,7 +44,7 @@
 <body>
   <main>
     <h1>水果盤 音效試聽</h1>
-    <p class="lead">按圓鈕試聽。挑好之後告訴 Claude 例如「小獎用 C、中獎用 B、得分用 A」，就會換進遊戲裡。<br>
+    <p class="lead">按圓鈕試聽。挑好之後告訴 Claude 例如「小獎用 C、中獎用 B、停輪用 D」，就會換進遊戲裡。<br>
       標「目前使用」的是遊戲現在用的。所有音效都來自 HeyGen 音效庫。</p>
     <div id="app"></div>
   </main>
@@ -72,11 +72,12 @@
         },
       },
       {
-        key: 'coin', title: '得分（金幣）', hint: '按得分時，一枚一枚數進來的金幣聲（試聽是 10 枚）', now: 'A',
+        key: 'reelstop', title: '停輪', hint: '每一輪停下來時（音量就是遊戲裡的實際大小）', now: 'A',
         items: {
-          A: ['金幣落下・叮', 'gold coin drop and ring'],
-          B: ['明亮金屬叮', 'bright metallic ding'],
-          C: ['金屬清脆碰撞', 'metallic clink'],
+          A: ['空心「喀」', 'hollow clack・0.2 秒'],
+          B: ['低沉「咚」', 'low percussive thud・0.2 秒'],
+          C: ['機械「咔嗒」', 'mechanical double click・0.2 秒'],
+          D: ['木頭「叩」', 'single wood knock・0.2 秒'],
         },
       },
     ];

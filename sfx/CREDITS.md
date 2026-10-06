@@ -4,13 +4,15 @@
 
 ## 遊戲使用中
 
+入金（得分）的金幣聲不是取樣，而是在 sound.js 即時 FM 合成的短金屬鈴（仿小瑪莉收分的「鏘」）。
+
 | 遊戲檔案 | HeyGen 名稱 | 編號 |
 |---|---|---|
 | button.mp3（按鍵） | Click and Beep | 301b0b85c4407fa3 |
 | coin.mp3 第 1 層（投幣：硬幣落下） | Quick metallic rattle | fa09ed3ae6377e67 |
 | coin.mp3 第 2 層（投幣：加分提示） | Two tone electronic chime | b6058a264c8df351 |
 | spin.mp3（轉輪循環） | Mechanical ratchet clicks | 393934d3a3ccc457 |
-| reelstop.mp3（停輪，裁到重擊點） | Heavy mechanical click | cb87077cb49ffe34 |
+| reelstop.mp3（停輪：空心「喀」，小聲） | Hollow clack | f5c7657c37921dc2 |
 | win.mp3（小獎：歡樂慶祝短樂句） | Astral Generated Music: 613a8316 | 613a83169b1e4b38acb91763a68e8279 |
 | medium.mp3（中獎：慶祝號角） | Astral Generated Music: 43e7e9ed | 43e7e9ed7366498a99c02e639d11bff7 |
 | bigwin.mp3 第 1 層（拉炮） | Airy pop | d9b59db7ed5ee90a |
@@ -19,7 +21,6 @@
 | bigwin.mp3 第 4 層（群眾歡呼）、doublewin.mp3 第 2 層 | Crowd cheer burst | 380346728d423751 |
 | bigwin.mp3 第 5 層、jackpot.mp3 第 2 層（硬幣灑落） | Small Object Clatter | 5fbd83418d5c1591 |
 | jackpot.mp3 第 1 層（鈴聲） | Cash register ring | 2d6aa30f6b865ec6 |
-| coingold.mp3（得分：金幣一枚一枚數進來） | Generated Music bc38e5ef | bc38e5efe341445c8690926ee721a7a7 |
 | roll.mp3（比倍：小鼓滾奏，2.27 秒重擊開數字） | Snare drum roll | 9d76a991b22e26a9 |
 | doublewin.mp3 第 1 層（比倍猜中：收銀機叮噹） | Cash register chime | 28b6e4d75153f21b |
 | doublelose.mp3（比倍沒中：卡通啵～嗡） | Cartoon boing | a9aa59d03ca9d1ab |
@@ -38,6 +39,7 @@
 | 中獎 B | Slot Machine Win | d23b2247104d4a818b31bc6d84dc7506 |
 | 中獎 C | Astral Generated Music: 2c4b3503 | 2c4b3503a20e4525948e51c33dc61f78 |
 | 中獎 D | Victory Fanfare | ea214f316152484fb9a8cfb361573386 |
-| 得分 A | Generated Music bc38e5ef | bc38e5efe341445c8690926ee721a7a7 |
-| 得分 B | Bright metallic ding | faadba062fe92c11 |
-| 得分 C | Metallic clink | d90818be6dad0694 |
+| 停輪 A | Hollow clack | f5c7657c37921dc2 |
+| 停輪 B | Low percussive thud | 53c87a6dd186c9f5 |
+| 停輪 C | Mechanical double click | ee5e8476e584cfdc |
+| 停輪 D | Three wood knocks | f7e66a7aed7b2dad |
