@@ -36,22 +36,22 @@
     { name: '右斜', cells: [[2, 0], [1, 1], [0, 2]] },
   ];
 
-  // 三條輪帶（由上往下捲，各 30 格）。每輪都有一段連續三個 77；WILD 只在中間那一輪（2 個，約每 4–5 局畫面上會出現一次）。
-  // tools/sim.js 依權重精算（押滿 8 線）：約每 2 局中 1 次、每 6.5 局 1 次大獎，回饋率約 97%；
-  // 依序開放的任何線數（1–8 線）回饋率都低於 100%。
+  // 三條輪帶（由上往下捲，各 30 格）。每輪都有一段連續三個 77；WILD 只在中間那一輪（約每 4 局畫面上會出現一次）。
+  // tools/sim.js 依權重精算（押滿 8 線）：中獎約 60%、大獎約每 4 局、全盤水果約每 50 局一次。
+  // 這是「爽快版」設定：全盤水果總押注 ×100 又常出現，整體回饋率遠高於 100%，餘額會越玩越多。
   const REELS = [
-    ['orange', 'melon', 'bar1', 'seven', 'seven', 'seven', 'star', 'orange', 'orange', 'bell', 'bar2', 'melon', 'bell', 'bar3', 'cherry',
-      'bar2', 'bell', 'star', 'cherry', 'cherry', 'star', 'orange', 'bell', 'star', 'bar2', 'bell', 'orange', 'star', 'orange', 'melon'],
-    ['cherry', 'bar3', 'bell', 'star', 'melon', 'melon', 'bar1', 'star', 'melon', 'cherry', 'wild', 'star', 'cherry', 'bell', 'bar2',
-      'seven', 'seven', 'seven', 'orange', 'bar1', 'bell', 'bar1', 'orange', 'melon', 'star', 'bar1', 'star', 'melon', 'wild', 'bar2'],
-    ['bar1', 'orange', 'bell', 'melon', 'orange', 'cherry', 'bar1', 'melon', 'orange', 'bar3', 'melon', 'orange', 'bar1', 'bar3', 'cherry',
-      'cherry', 'bell', 'bar3', 'melon', 'bell', 'bell', 'star', 'seven', 'seven', 'seven', 'bar2', 'bar3', 'orange', 'bell', 'melon'],
+    ['orange', 'bar3', 'melon', 'seven', 'seven', 'seven', 'cherry', 'orange', 'orange', 'bell', 'star', 'orange', 'bar1', 'melon', 'bar1',
+      'bar1', 'bar2', 'orange', 'cherry', 'cherry', 'bell', 'orange', 'bell', 'bell', 'orange', 'melon', 'cherry', 'bell', 'orange', 'cherry'],
+    ['cherry', 'wild', 'seven', 'melon', 'orange', 'cherry', 'bell', 'bar3', 'cherry', 'orange', 'wild', 'bar2', 'bar3', 'bell', 'seven',
+      'seven', 'seven', 'cherry', 'bar3', 'bell', 'bell', 'orange', 'star', 'melon', 'orange', 'melon', 'melon', 'orange', 'wild', 'bar1'],
+    ['star', 'orange', 'bell', 'star', 'bar3', 'bell', 'star', 'cherry', 'cherry', 'melon', 'melon', 'orange', 'melon', 'bar1', 'bell',
+      'orange', 'bar1', 'bar2', 'bar3', 'orange', 'melon', 'bar1', 'seven', 'seven', 'seven', 'cherry', 'bell', 'star', 'melon', 'melon'],
   ];
   // 每個停點的權重（虛擬輪帶）：疊 77 附近的停點權重很小——每圈都看得到它轉過去，但很少停在那裡
   const WEIGHTS = [
-    [6, 1, 1, 1, 12, 1, 34, 54, 1, 19, 3, 1, 1, 1, 1, 25, 26, 36, 41, 16, 5, 43, 55, 24, 48, 24, 8, 6, 58, 3],
-    [1, 16, 24, 57, 8, 57, 20, 31, 27, 19, 12, 1, 1, 6, 1, 1, 1, 4, 60, 10, 47, 46, 32, 8, 25, 16, 29, 16, 38, 1],
-    [34, 25, 14, 14, 13, 6, 10, 54, 9, 46, 20, 41, 4, 37, 55, 8, 22, 23, 28, 2, 1, 1, 1, 1, 1, 1, 60, 16, 22, 33],
+    [1, 1, 1, 1, 5, 10, 40, 60, 13, 14, 8, 10, 1, 3, 6, 11, 4, 44, 59, 18, 8, 40, 45, 37, 60, 20, 8, 4, 53, 1],
+    [10, 1, 47, 57, 7, 60, 10, 53, 31, 11, 14, 16, 15, 18, 1, 2, 28, 10, 41, 2, 25, 41, 43, 27, 26, 18, 40, 20, 60, 1],
+    [30, 44, 23, 23, 33, 14, 1, 60, 25, 45, 24, 37, 3, 34, 41, 4, 17, 30, 50, 28, 7, 1, 1, 1, 3, 6, 44, 9, 9, 54],
   ];
 
   /** 輪帶停在 stop 時，畫面上由上到下的三個圖 */
