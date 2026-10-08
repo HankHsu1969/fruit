@@ -20,6 +20,7 @@
 | bigwin.mp3 第 4 層（群眾歡呼）、doublewin.mp3 第 2 層 | Crowd cheer burst | 380346728d423751 |
 | bigwin.mp3 第 5 層、jackpot.mp3 第 2 層（硬幣灑落） | Small Object Clatter | 5fbd83418d5c1591 |
 | jackpot.mp3 第 1 層（鈴聲） | Cash register ring | 2d6aa30f6b865ec6 |
+| fullfruit.mp3（全盤水果慶祝音樂：電子賭場 Jackpot；開頭疊 jackpot.mp3 與群眾歡呼） | Casino Jackpot | c62aa69e55bc4ffba44cd79926bef3e8 |
 | roll.mp3（比倍：小鼓滾奏，2.27 秒重擊開數字） | Snare drum roll | 9d76a991b22e26a9 |
 | doublewin.mp3 第 1 層（比倍猜中：收銀機叮噹） | Cash register chime | 28b6e4d75153f21b |
 | doublelose.mp3（比倍沒中：卡通啵～嗡） | Cartoon boing | a9aa59d03ca9d1ab |
@@ -38,6 +39,11 @@
 | 中獎 B | Slot Machine Win | d23b2247104d4a818b31bc6d84dc7506 |
 | 中獎 C | Astral Generated Music: 2c4b3503 | 2c4b3503a20e4525948e51c33dc61f78 |
 | 中獎 D | Victory Fanfare | ea214f316152484fb9a8cfb361573386 |
+| 全盤水果 A | Astral Generated Music: 67ddb52a | 67ddb52a2ea54a8bbe611d1459334b43 |
+| 全盤水果 B | Casino Jackpot | c62aa69e55bc4ffba44cd79926bef3e8 |
+| 全盤水果 C | Festive CNY Music | 6cdb18f5cf094356a82ea804dade3849 |
+| 全盤水果 D | Astral Generated Music: 4b79ebfe | 4b79ebfe69f94fe0a27d09ce5af9d81e |
+| 全盤水果 E | Maxwin Energy | d79fe627db454fde9bb0cac23f6eb7d8 |
 | 停輪 A | Hollow clack | f5c7657c37921dc2 |
 | 停輪 B | Low percussive thud | 53c87a6dd186c9f5 |
 | 停輪 C | Mechanical double click | ee5e8476e584cfdc |

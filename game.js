@@ -518,9 +518,10 @@
     const big = ev.total >= totalBet() * C.BIG_WIN_RATIO;
     const tier = big ? 'big' : ev.total >= totalBet() ? 'medium' : 'small';
     // 輪子一停就響：大獎放慶祝音樂、中獎播收銀機叮＋亮晶晶的短樂句、小獎播兩聲門鈴
+    const fullFruit = ev.bonus && ev.bonus.kind === 'fullfruit';
     if (ev.bonus) {
       showTag(ev.bonus.label);
-      Snd.jackpot();
+      if (fullFruit) Snd.fullFruit(); else Snd.jackpot();
     } else {
       if (big) showTag(ev.total >= totalBet() * 10 ? '超級大獎' : '大獎');
       Snd.win(tier);
@@ -538,9 +539,9 @@
     if (ev.bonus) {
       markCells(ev.bonus.cells);
       msg(`${ev.bonus.label}！${ev.bonus.desc} ＝ ${money(ev.bonus.win)}`);
-      await sleep(1500);
+      await sleep(fullFruit ? 2600 : 1500);
     }
-    await countUp(ev.total);
+    await countUp(ev.total, fullFruit ? 70 : 26);
     st.best = Math.max(st.best, ev.total);
     pushHistory(ev);
     st.mode = 'win';
@@ -549,11 +550,11 @@
   }
 
   // 贏得金額跳上去（不另外出聲，讓中獎音樂乾淨）
-  async function countUp(target) {
+  async function countUp(target, stepMs = 26) {
     const steps = Math.min(30, target);
     for (let k = 1; k <= steps; k++) {
       segWin(Math.round((target * k) / steps) * YUAN);
-      await sleep(26);
+      await sleep(stepMs);
     }
     st.win = target;
   }

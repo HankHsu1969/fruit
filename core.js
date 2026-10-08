@@ -115,7 +115,7 @@
     for (let r = 0; r < 3; r++) for (let k = 0; k < 3; k++) all.push([r, k]);
     const sevens = all.filter(([r, k]) => grid[r][k] === 'seven');
     if (all.every(([r, k]) => SYMBOLS[grid[r][k]].fruit || SYMBOLS[grid[r][k]].wild)) {
-      bonus = { label: '全盤水果', desc: `總押注 ×${FULL_FRUIT_PAY}`, win: FULL_FRUIT_PAY * lines * lineBet, cells: all };
+      bonus = { kind: 'fullfruit', label: '全盤水果', desc: `總押注 ×${FULL_FRUIT_PAY}`, win: FULL_FRUIT_PAY * lines * lineBet, cells: all };
     } else if (SEVEN_COUNT_PAY[sevens.length]) {
       const pay = SEVEN_COUNT_PAY[sevens.length];
       bonus = { label: `${sevens.length} 個 77`, desc: `每線押注 ×${pay}`, win: pay * lineBet, cells: sevens };
